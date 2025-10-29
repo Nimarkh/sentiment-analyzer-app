@@ -68,25 +68,35 @@ You can retrain or modify the model in:
 
 ### 5️⃣ Run the Application
 
-**Option A: API Only**
+**Full Stack Application (Recommended)**
+
 ```bash
-cd app
+cd backend
 uvicorn main:app --reload
 ```
-Then open your browser at: http://127.0.0.1:8000/docs
 
-**Option B: Full Web App (Recommended)**
+Then open your browser at: http://127.0.0.1:8000
+
+**Development Mode (Frontend + Backend)**
+
 ```bash
-cd app
-streamlit run ui_app.py
+# Terminal 1: Backend
+cd backend
+uvicorn main:app --reload
+
+# Terminal 2: Frontend (for development)
+cd frontend
+ng serve
 ```
-Then open your browser at: http://localhost:8501
+
+Then open your browser at: http://localhost:4200
 
 ---
 
 ## 🌐 Live Demo
 
 ### API Endpoint
+
 Try the API live at:
 
 👉 **https://sentiment-analyzer-app-puua.onrender.com/docs**
@@ -94,6 +104,7 @@ Try the API live at:
 Interactive Swagger UI for testing the API endpoints.
 
 ### Web Application
+
 Experience the full web application with a beautiful UI:
 
 👉 **Streamlit UI** (Run locally: `streamlit run app/ui_app.py`)
@@ -128,13 +139,27 @@ Experience the full web application with a beautiful UI:
 ```
 sentiment-analyzer-app/
 │
-├── app/
-│   ├── main.py              # FastAPI backend
-│   ├── model.py             # model helpers
-│   ├── ui_app.py            # Streamlit UI
-│   ├── requirements.txt     # dependencies
-│   ├── sentiment_model.pkl  # trained model
-│   └── vectorizer.pkl       # text vectorizer
+├── backend/                 # FastAPI Backend
+│   ├── main.py             # FastAPI server with Angular UI
+│   ├── model.py            # model helpers
+│   ├── requirements.txt    # Python dependencies
+│   ├── sentiment_model.pkl # trained model
+│   ├── vectorizer.pkl      # text vectorizer
+│   ├── static/             # Angular build output
+│   │   ├── index.html
+│   │   ├── main.js
+│   │   └── styles.css
+│   └── render.yaml         # Render deployment config
+│
+├── frontend/               # Angular Frontend
+│   ├── src/
+│   │   ├── app/
+│   │   │   └── sentiment-analyzer/
+│   │   │       └── sentiment-analyzer.component.ts
+│   │   ├── index.html
+│   │   └── styles.css
+│   ├── package.json
+│   └── angular.json
 │
 ├── notebooks/
 │   └── data_preprocessing.ipynb  # training notebook
