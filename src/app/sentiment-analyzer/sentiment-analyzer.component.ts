@@ -5,7 +5,13 @@ import { HttpClient } from "@angular/common/http";
 
 interface SentimentResponse {
   text: string;
-  sentiment: string;
+  sentiment: "positive" | "negative";
+  label: string;
+  confidence?: number | null;
+  probabilities?: {
+    positive: number;
+    negative: number;
+  } | null;
 }
 
 @Component({
@@ -14,7 +20,7 @@ interface SentimentResponse {
   imports: [CommonModule, FormsModule],
   template: `
     <div class="sentiment-analyzer">
-      <h2>✍️ Enter your text here</h2>
+      <h2>Enter your text</h2>
 
       <div class="form-group">
         <label for="textInput">Text to analyze:</label>
@@ -35,7 +41,7 @@ interface SentimentResponse {
           (click)="analyzeSentiment()"
           [disabled]="!inputText.trim() || isLoading"
         >
-          {{ isLoading ? "Analyzing..." : "🔍 Analyze Sentiment" }}
+          {{ isLoading ? "Analyzing..." : "Analyze Sentiment" }}
         </button>
       </div>
 
@@ -49,12 +55,19 @@ interface SentimentResponse {
       </div>
 
       <div *ngIf="result" class="result" [ngClass]="getSentimentClass()">
-        <h2>{{ result.sentiment }}</h2>
+        <h2>{{ result.label }}</h2>
+        <p *ngIf="result.confidence !== null && result.confidence !== undefined">
+          <strong>Confidence:</strong> {{ formatPercent(result.confidence) }}
+        </p>
+        <div *ngIf="result.probabilities" class="probabilities">
+          <span>Positive: {{ formatPercent(result.probabilities.positive) }}</span>
+          <span>Negative: {{ formatPercent(result.probabilities.negative) }}</span>
+        </div>
         <p><strong>Text:</strong> "{{ result.text }}"</p>
       </div>
 
       <div class="examples">
-        <h3>💡 Try these examples:</h3>
+        <h3>Examples</h3>
         <div class="example-buttons">
           <button
             *ngFor="let example of examples"
@@ -116,6 +129,14 @@ interface SentimentResponse {
       .result.negative h2 {
         color: #dc3545;
       }
+
+      .probabilities {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin: 10px 0;
+        color: #555;
+      }
     `,
   ],
 })
@@ -134,7 +155,7 @@ export class SentimentAnalyzerComponent {
     "Worst experience ever",
   ];
 
-  private apiUrl = "http://127.0.0.1:8000";
+  private readonly predictUrl = "/predict";
 
   constructor(private http: HttpClient) {}
 
@@ -147,25 +168,18 @@ export class SentimentAnalyzerComponent {
 
     const requestBody = { text: this.inputText };
 
-    console.log("Sending request to:", `${this.apiUrl}/predict`);
-    console.log("Request body:", requestBody);
-
     this.http
-      .post<SentimentResponse>(`${this.apiUrl}/predict`, requestBody, {
+      .post<SentimentResponse>(this.predictUrl, requestBody, {
         headers: {
           "Content-Type": "application/json",
         },
       })
       .subscribe({
         next: (response) => {
-          console.log("Response received:", response);
           this.result = response;
           this.isLoading = false;
         },
         error: (error) => {
-          console.error("API Error:", error);
-          console.error("Error status:", error.status);
-          console.error("Error message:", error.message);
           this.error =
             error.error?.detail ||
             error.message ||
@@ -183,6 +197,10 @@ export class SentimentAnalyzerComponent {
 
   getSentimentClass(): string {
     if (!this.result) return "";
-    return this.result.sentiment.includes("Positive") ? "positive" : "negative";
+    return this.result.sentiment;
+  }
+
+  formatPercent(value: number): string {
+    return `${Math.round(value * 100)}%`;
   }
 }

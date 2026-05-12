@@ -1,22 +1,28 @@
-# 🚀 راهنمای اجرای سرور
+# راهنمای اجرای سرور
 
 ## اجرای API (FastAPI)
+
+قبل از اجرای UI اصلی، مدل و خروجی Angular را بساز:
+```powershell
+python setup_model.py
+npm run build
+```
 
 ### روش 1: استفاده از فایل batch (ساده‌تر)
 فقط دوبار کلیک کن روی:
 ```
-app/run_api.bat
+backend/run_api.bat
 ```
 
 ### روش 2: اجرا دستی در PowerShell
 ```powershell
-cd app
+cd backend
 ..\venv\Scripts\python.exe -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 ### روش 3: اجرا دستی در Command Prompt
 ```cmd
-cd app
+cd backend
 ..\venv\Scripts\uvicorn.exe main:app --reload
 ```
 
@@ -29,11 +35,16 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
 
-سپس برو به: **http://127.0.0.1:8000/docs**
+سپس برو به: **http://127.0.0.1:8000** یا برای Swagger به **http://127.0.0.1:8000/docs**
+
+برای بررسی وضعیت مدل:
+```powershell
+curl http://127.0.0.1:8000/health
+```
 
 ---
 
-## 🔍 عیب‌یابی
+## عیب‌یابی
 
 ### مشکل: سرور اجرا نمی‌شه
 
@@ -49,7 +60,7 @@ INFO:     Application startup complete.
 
 3. **اگر نصب نیست، دوباره نصب کن:**
    ```powershell
-   venv\Scripts\python.exe -m pip install -r app/requirements.txt
+venv\Scripts\python.exe -m pip install -r backend/requirements.txt
    ```
 
 ### مشکل: صفحه بارگذاری نمی‌شه
@@ -61,7 +72,7 @@ INFO:     Application startup complete.
    
 2. اگر پورت اشغال بود، پورت دیگه استفاده کن:
    ```powershell
-   cd app
+cd backend
    ..\venv\Scripts\python.exe -m uvicorn main:app --reload --port 8001
    ```
 
@@ -71,8 +82,8 @@ INFO:     Application startup complete.
 
 اگر خطای "Model files not found" دیدی:
 1. چک کن فایل‌های زیر وجود دارند:
-   - `app/sentiment_model.pkl`
-   - `app/vectorizer.pkl`
+   - `backend/sentiment_model.pkl`
+   - `backend/vectorizer.pkl`
 
 2. اگر نیستند، اسکریپت رو اجرا کن:
    ```powershell
@@ -86,14 +97,15 @@ INFO:     Application startup complete.
 ### روش 1: استفاده از فایل batch
 دوبار کلیک کن روی:
 ```
-app/run_ui.bat
+backend/run_ui.bat
 ```
 
 ### روش 2: اجرا دستی
 ```powershell
-cd app
+cd backend
 ..\venv\Scripts\streamlit.exe run ui_app.py
 ```
 
 سپس برو به: **http://localhost:8501**
+
 

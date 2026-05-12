@@ -35,9 +35,9 @@ env/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Model files (but allow in app/ folder for deployment)
+# Model files (but allow backend artifacts for deployment)
 *.pkl
-!app/*.pkl
+!backend/*.pkl
 *.h5
 *.pt
 *.pth
@@ -45,9 +45,10 @@ env/
 
 # Data files
 *.csv
-*.json
 *.xlsx
 *.parquet
+data/**/*.json
+notebooks/**/*.json
 
 # Logs
 *.log
@@ -57,3 +58,6 @@ env/
 Thumbs.db
 
 node_modules
+.angular/
+dist/
+coverage/

@@ -1,121 +1,83 @@
-# 🧠 Sentiment Analyzer App
+# Sentiment Analyzer
 
-_A simple AI-powered web API that detects the sentiment (Positive or Negative) of any given text._
+A small sentiment analysis app with a FastAPI backend, an Angular UI, and a scikit-learn Naive Bayes model.
 
----
+The app accepts a text input and returns a stable sentiment code, display label, and model confidence when available.
 
-## 🚀 Overview
+## Features
 
-This project is a minimal yet powerful **Sentiment Analysis Web API** built with **FastAPI** and a **Naive Bayes classifier** trained on sample text data.
+- FastAPI endpoints for sentiment prediction and health checks
+- Angular frontend served by the backend after build
+- Streamlit UI for quick local testing
+- CountVectorizer text preprocessing
+- Serialized model and vectorizer with `joblib`
 
-It takes a text input and predicts whether the sentiment is **Positive 😀** or **Negative 😞**.
+## Tech Stack
 
----
+| Part | Technology |
+| --- | --- |
+| Backend | FastAPI |
+| Frontend | Angular, Streamlit |
+| Model | scikit-learn |
+| Language | Python, TypeScript |
+| Serialization | joblib |
 
-## 🧩 Features
+## Setup
 
-✅ REST API built with FastAPI
-
-✅ Pre-trained machine learning model (Naive Bayes)
-
-✅ Text preprocessing using CountVectorizer
-
-✅ Interactive Swagger UI for testing
-
-✅ Easy to extend or deploy
-
----
-
-## 🛠️ Tech Stack
-
-| Component           | Technology    |
-| ------------------- | ------------- |
-| Backend             | FastAPI       |
-| Machine Learning    | scikit-learn  |
-| Language            | Python        |
-| Data Handling       | Pandas, Numpy |
-| Model Serialization | joblib        |
-
----
-
-## 📦 Installation & Setup
-
-### 1️⃣ Clone this repository
-
-```bash
-git clone https://github.com/<your-username>/sentiment-analyzer-app.git
-cd sentiment-analyzer-app
-```
-
-### 2️⃣ Create and activate virtual environment
+Create a virtual environment and install the Python dependencies:
 
 ```bash
 python -m venv venv
-source venv/bin/activate      # (Windows: venv\Scripts\activate)
+venv\Scripts\activate
+pip install -r backend/requirements.txt
 ```
 
-### 3️⃣ Install dependencies
+Install the frontend dependencies:
 
 ```bash
-pip install -r app/requirements.txt
+npm install
 ```
 
-### 4️⃣ Train model (optional)
+## Running Locally
 
-You can retrain or modify the model in:
+Train the sample model:
 
-`notebooks/data_preprocessing.ipynb`
+```bash
+python setup_model.py
+```
 
-### 5️⃣ Run the Application
+Build the Angular UI into `backend/static`:
 
-**Full Stack Application (Recommended)**
+```bash
+npm run build
+```
+
+Run the API and serve the built frontend:
 
 ```bash
 cd backend
 uvicorn main:app --reload
 ```
 
-Then open your browser at: http://127.0.0.1:8000
+Open `http://127.0.0.1:8000`.
 
-**Development Mode (Frontend + Backend)**
+For frontend development, run Angular separately:
 
 ```bash
-# Terminal 1: Backend
-cd backend
-uvicorn main:app --reload
-
-# Terminal 2: Frontend (for development)
-cd frontend
-ng serve
+npm start
 ```
 
-Then open your browser at: http://localhost:4200
+Open `http://localhost:4200`. The dev server proxies `/predict`, `/health`, and `/docs` to FastAPI.
 
----
+To run the Streamlit version:
 
-## 🌐 Live Demo
+```bash
+streamlit run backend/ui_app.py
+```
 
-### API Endpoint
+## API Example
 
-Try the API live at:
-
-👉 **https://sentiment-analyzer-app-puua.onrender.com/docs**
-
-Interactive Swagger UI for testing the API endpoints.
-
-### Web Application
-
-Experience the full web application with a beautiful UI:
-
-👉 **Streamlit UI** (Run locally: `streamlit run app/ui_app.py`)
-
-![App Demo](docs/demo.png)
-
----
-
-## 🧠 Example
-
-**Request:**
+Request:
 
 ```json
 {
@@ -123,108 +85,77 @@ Experience the full web application with a beautiful UI:
 }
 ```
 
-**Response:**
+Response:
 
 ```json
 {
   "text": "I really love this movie!",
-  "sentiment": "Positive 😀"
+  "sentiment": "positive",
+  "label": "Positive",
+  "confidence": 0.91,
+  "probabilities": {
+    "positive": 0.91,
+    "negative": 0.09
+  }
 }
 ```
 
----
+Health check:
 
-## 🧰 Folder Structure
-
+```bash
+curl http://127.0.0.1:8000/health
 ```
+
+## Project Structure
+
+```text
 sentiment-analyzer-app/
-│
-├── backend/                 # FastAPI Backend
-│   ├── main.py             # FastAPI server with Angular UI
-│   ├── model.py            # model helpers
-│   ├── requirements.txt    # Python dependencies
-│   ├── sentiment_model.pkl # trained model
-│   ├── vectorizer.pkl      # text vectorizer
-│   ├── static/             # Angular build output
-│   │   ├── index.html
-│   │   ├── main.js
-│   │   └── styles.css
-│   └── render.yaml         # Render deployment config
-│
-├── frontend/               # Angular Frontend
-│   ├── src/
-│   │   ├── app/
-│   │   │   └── sentiment-analyzer/
-│   │   │       └── sentiment-analyzer.component.ts
-│   │   ├── index.html
-│   │   └── styles.css
-│   ├── package.json
-│   └── angular.json
-│
-├── notebooks/
-│   └── data_preprocessing.ipynb  # training notebook
-│
-├── docs/
-│   └── demo.png            # app screenshot
-│
-├── README.md
-└── .gitignore
+├── backend/
+│   ├── main.py
+│   ├── model.py
+│   ├── requirements.txt
+│   ├── sentiment_model.pkl
+│   ├── vectorizer.pkl
+│   ├── tests/
+│   └── static/
+├── src/
+│   ├── app/
+│   ├── index.html
+│   └── styles.css
+├── setup_model.py
+├── angular.json
+├── package.json
+└── README.md
 ```
 
----
+## Model
 
-## 🖥️ Demo Screenshot
+`setup_model.py` trains a small sample model with a reproducible split and saves the output files used by the backend.
 
-Add a screenshot or GIF of your API in action here (e.g., Swagger UI)
+```bash
+python setup_model.py
+```
 
-Example:
+## Deployment
 
----
+The backend can be deployed as a standard FastAPI app. Make sure `backend/sentiment_model.pkl`, `backend/vectorizer.pkl`, and the Angular build files are present before deploying.
 
-## 📄 License
+Set `ALLOWED_ORIGINS` to a comma-separated list of browser origins that are allowed to call the API, for example:
 
-MIT License © 2025 Your Name
+```bash
+ALLOWED_ORIGINS=https://sentiment-analyzer-app-puua.onrender.com
+```
 
----
+## Tests
 
-## 🌟 Support
+Run backend tests:
 
-If you like this project, give it a ⭐ on GitHub!
+```bash
+pytest backend/tests
+```
 
----
+Run frontend tests:
 
-## 🚀 Deployment (Optional)
-
-You can deploy your API online for free using services like:
-
-### 🔹 Method 1: Render.com
-
-The easiest way for FastAPI.
-
-1. Go to render.com and login with GitHub
-2. Select "New Web Service"
-3. Choose your repository
-4. Settings:
-   - **Build Command**: `pip install -r app/requirements.txt`
-   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port 10000`
-5. Click Deploy ✅
-
-After a few minutes, you'll get a link like:
-
-`https://sentiment-analyzer-app-puua.onrender.com/docs`
-
-✅ **Live deployment:** https://sentiment-analyzer-app-puua.onrender.com
-
----
-
-## 📈 Future Improvements
-
-After the initial version is up, you can add these features one by one:
-
-| Idea                 | Description                                     |
-| -------------------- | ----------------------------------------------- |
-| 🧠 Upgrade Model     | Use transformers like BERT with HuggingFace     |
-| 🌐 User Interface    | Build a simple frontend with Streamlit or React |
-| 🧪 Automated Testing | Add tests with pytest and GitHub Actions        |
-| 🐳 Dockerize         | Create Dockerfile for easy project deployment   |
-| 📊 Monitoring        | Log API logs with logging and ELK stack         |
+```bash
+npm test
+```
