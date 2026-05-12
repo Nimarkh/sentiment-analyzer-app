@@ -4,11 +4,33 @@
   box-sizing: border-box;
 }
 
+:root {
+  color-scheme: light;
+  --page-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --muted-color: #555555;
+  --border-color: #e1e5e9;
+  --field-bg: #ffffff;
+  --soft-bg: #f8f9fa;
+}
+
+body.dark-theme {
+  color-scheme: dark;
+  --page-gradient: linear-gradient(135deg, #111827 0%, #312e81 100%);
+  --card-bg: #111827;
+  --text-color: #e5e7eb;
+  --muted-color: #cbd5e1;
+  --border-color: #374151;
+  --field-bg: #1f2937;
+  --soft-bg: #1f2937;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--page-gradient);
   min-height: 100vh;
-  color: #333;
+  color: var(--text-color);
 }
 
 .container {
@@ -18,7 +40,7 @@ body {
 }
 
 .card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   padding: 40px;
@@ -55,15 +77,17 @@ body {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
-  color: #555;
+  color: var(--muted-color);
 }
 
 .form-control {
   width: 100%;
   padding: 12px;
-  border: 2px solid #e1e5e9;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 16px;
+  color: var(--text-color);
+  background: var(--field-bg);
   transition: border-color 0.3s;
 }
 

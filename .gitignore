@@ -52,6 +52,12 @@ notebooks/**/*.json
 
 # Logs
 *.log
+backend/analytics.db
+
+# Local environment
+.env
+.env.*
+!.env.example
 
 # OS
 .DS_Store

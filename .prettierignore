@@ -1,0 +1,5 @@
+backend/static/
+coverage/
+node_modules/
+venv/
+*.pkl

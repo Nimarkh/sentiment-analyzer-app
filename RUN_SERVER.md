@@ -39,7 +39,7 @@ INFO:     Application startup complete.
 
 برای بررسی وضعیت مدل:
 ```powershell
-curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8000/api/v1/health
 ```
 
 ---

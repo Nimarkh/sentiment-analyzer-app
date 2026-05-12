@@ -1,5 +1,4 @@
 import streamlit as st
-
 from model import ModelNotAvailableError, predict_sentiment
 
 try:
@@ -20,7 +19,10 @@ st.write("Enter a sentence or paragraph to classify its sentiment as positive or
 
 with st.sidebar:
     st.header("About")
-    st.write("This app uses a **Naive Bayes classifier** trained on sample text data to predict sentiment.")
+    st.write(
+        "This app uses a **scikit-learn classifier** trained on sample text data "
+        "to predict sentiment."
+    )
     st.write("**How it works:**")
     st.write("1. Enter your text")
     st.write("2. Click Analyze Sentiment")
@@ -30,7 +32,7 @@ with st.sidebar:
     st.write("- **Backend:** FastAPI")
     st.write("- **Frontend:** Streamlit")
     st.write("- **ML Model:** scikit-learn")
-    st.write("- **Vectorization:** CountVectorizer")
+    st.write("- **Vectorization:** TfidfVectorizer")
 
 if not model_loaded:
     st.error("Model files not found. Please train and save the model first.")

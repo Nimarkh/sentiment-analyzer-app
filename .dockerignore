@@ -1,0 +1,13 @@
+.angular/
+.git/
+.github/
+coverage/
+dist/
+node_modules/
+venv/
+ENV/
+env/
+__pycache__/
+*.pyc
+*.log
+notebooks/.ipynb_checkpoints/

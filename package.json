@@ -6,7 +6,10 @@
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --watch=false --browsers=ChromeHeadless"
+    "test": "ng test --watch=false --browsers=ChromeHeadless",
+    "lint:py": "ruff check backend setup_model.py",
+    "format:py": "ruff format backend setup_model.py",
+    "format": "prettier --write \"src/**/*.{ts,css,html}\" \"*.{json,md,yml,yaml}\" \".github/**/*.yml\""
   },
   "private": true,
   "dependencies": {
@@ -34,6 +37,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "prettier": "^3.0.0",
     "typescript": "~5.4.0"
   }
 }

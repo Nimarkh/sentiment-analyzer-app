@@ -1,14 +1,11 @@
+import json
 from functools import lru_cache
-from pathlib import Path
 from typing import Any
-import os
 
 import joblib
+from settings import get_settings
 
-
-BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH = Path(os.environ.get("MODEL_PATH", str(BASE_DIR / "sentiment_model.pkl")))
-VECTORIZER_PATH = Path(os.environ.get("VECTORIZER_PATH", str(BASE_DIR / "vectorizer.pkl")))
+settings = get_settings()
 
 
 class ModelNotAvailableError(RuntimeError):
@@ -19,7 +16,7 @@ class ModelNotAvailableError(RuntimeError):
 def load_artifacts() -> tuple[Any, Any]:
     missing_paths = [
         str(path)
-        for path in (MODEL_PATH, VECTORIZER_PATH)
+        for path in (settings.model_path, settings.vectorizer_path)
         if not path.exists()
     ]
     if missing_paths:
@@ -28,7 +25,7 @@ def load_artifacts() -> tuple[Any, Any]:
         )
 
     try:
-        return joblib.load(MODEL_PATH), joblib.load(VECTORIZER_PATH)
+        return joblib.load(settings.model_path), joblib.load(settings.vectorizer_path)
     except Exception as exc:
         raise ModelNotAvailableError(f"Could not load model artifacts: {exc}") from exc
 
@@ -45,7 +42,9 @@ def predict_sentiment(text: str) -> dict[str, Any]:
         raw_probabilities = model.predict_proba(text_vector)[0]
         probabilities_by_class = {
             int(label): float(probability)
-            for label, probability in zip(model.classes_, raw_probabilities)
+            for label, probability in zip(
+                model.classes_, raw_probabilities, strict=True
+            )
         }
         probabilities = {
             "negative": probabilities_by_class.get(0, 0.0),
@@ -59,3 +58,15 @@ def predict_sentiment(text: str) -> dict[str, Any]:
         "confidence": confidence,
         "probabilities": probabilities,
     }
+
+
+def load_model_metadata() -> dict[str, Any]:
+    if not settings.metadata_path.exists():
+        raise ModelNotAvailableError(
+            f"Model metadata file is missing: {settings.metadata_path}"
+        )
+
+    try:
+        return json.loads(settings.metadata_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise ModelNotAvailableError(f"Could not load model metadata: {exc}") from exc
